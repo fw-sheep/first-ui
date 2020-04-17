@@ -140,6 +140,31 @@
             }
           ]
         },
+        {
+          icon: 'el-icon-s-global',
+          index: 'i18n',
+          title: '国际化功能'
+        },
+        {
+          icon: 'el-icon-s-warn',
+          index: '7',
+          title: '错误处理',
+          subs: [
+            {
+              index: 'permission',
+              title: '权限测试'
+            },
+            {
+              index: '404',
+              title: '404页面'
+            }
+          ]
+        },
+        {
+          icon: 'el-icon-s-redpacket_fill',
+          index: '/donate',
+          title: '支持作者'
+        }
       ];
       return {
         items: items,
