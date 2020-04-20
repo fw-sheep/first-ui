@@ -26,6 +26,7 @@
                       v-for="(threeItem,i) in subItem.subs"
                       :key="i"
                       :index="threeItem.index"
+                      @click="setBreadcrumb(threeItem,subItem,item)"
                     >{{ threeItem.title }}
                     </el-menu-item>
                   </el-submenu>
@@ -33,15 +34,18 @@
                     v-else
                     :index="subItem.index"
                     :key="subItem.index"
+                    @click="setBreadcrumb('',subItem,item)"
                   >{{ subItem.title }}
                   </el-menu-item>
                 </template>
               </el-submenu>
             </template>
             <template v-else>
-              <el-menu-item :index="item.index" :key="item.index">
+              <el-menu-item :index="item.index" :key="item.index" @click="setBreadcrumb('','',item)">
                 <i :class="item.icon"></i>
-                <span slot="title">{{ item.title }}</span>
+                <span slot="title">
+                  <router-link :to="item.path">{{ item.title }}</router-link>
+                </span>
               </el-menu-item>
             </template>
           </template>
@@ -49,11 +53,15 @@
       </el-aside>
       <el-container>
         <el-main>
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/' }">活动管理</el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <template v-for="breadcrumb in breadcrumbs">
+              <el-breadcrumb-item :to="{ path: breadcrumb.path }">{{breadcrumb.name}}</el-breadcrumb-item>
+            </template>
+            <el-divider></el-divider>
           </el-breadcrumb>
+          <el-col :span="24">
+            <router-view :key="$route.fullPath"></router-view>
+          </el-col>
         </el-main>
         <!--        <el-footer height="40px">Footer</el-footer>-->
       </el-container>
@@ -73,17 +81,21 @@
         {
           icon: 'el-icon-s-home',
           index: 'dashboard',
-          title: '系统首页'
+          title: '系统首页',
+          path: '/user'
         },
         {
           icon: 'el-icon-s-data',
           index: 'table',
-          title: '基础表格'
+          title: '基础表格',
+          path: '/role'
+
         },
         {
           icon: 'el-icon-s-order',
           index: 'tabs',
-          title: 'tab选项卡'
+          title: 'tab选项卡',
+          path: '/permiss'
         },
         {
           icon: 'el-icon-date',
@@ -117,12 +129,14 @@
         {
           icon: 'el-icon-s-emoji',
           index: 'icon',
-          title: '自定义图标'
+          title: '自定义图标',
+          path: '/user'
         },
         {
           icon: 'el-icon-pie-chart',
           index: 'charts',
-          title: 'schart图表'
+          title: 'schart图表',
+          path: '/user'
         },
         {
           icon: 'el-icon-rank',
@@ -140,8 +154,21 @@
           ]
         },
       ];
+      const breadcrumbs = [
+        {
+          index: 0,
+          path: '/home',
+          name: '首页',
+        },
+        {
+          index: 1,
+          path: '/user',
+          name: '用户管理',
+        },
+      ];
       return {
         items: items,
+        breadcrumbs: breadcrumbs,
         isCollapse: false,
         // tableData: Array(50).fill(item)
       }
@@ -155,7 +182,35 @@
       spreadAside(a) {
         this.isCollapse = !this.isCollapse
         // this.wt = this.isCollapse ? 65 : 200
-      }
+      },
+      setBreadcrumb(itemGrad, itemParent, item) {
+        console.log(item)
+        this.breadcrumbs = [];
+        this.breadcrumbs.push({
+          index: 0,
+          path: '/home',
+          name: '首页',
+        },)
+        this.breadcrumbs.push({
+          index: 0,
+          path: item.path,
+          name: item.title,
+        },)
+        if (itemParent != '') {
+          this.breadcrumbs.push({
+            index: 0,
+            path: itemParent.path,
+            name: itemParent.title,
+          },)
+        }
+        if (itemGrad != '') {
+          this.breadcrumbs.push({
+            index: 0,
+            path: itemGrad.path,
+            name: itemGrad.title,
+          },)
+        }
+      },
     }
   };
 </script>
